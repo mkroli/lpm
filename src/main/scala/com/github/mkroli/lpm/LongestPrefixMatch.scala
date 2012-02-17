@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.krolikowski.lpm
+package com.github.mkroli.lpm
 
 private[lpm] sealed class TreeNode[T: Manifest] {
   val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)

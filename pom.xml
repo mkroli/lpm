@@ -1,0 +1,100 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.github.mkroli.lpm</groupId>
+	<artifactId>lpm</artifactId>
+	<version>0.1-SNAPSHOT</version>
+
+	<name>Longest Prefix Match</name>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<organization>
+		<name>Michael Krolikowski</name>
+		<url>http://mkroli.github.com/</url>
+	</organization>
+	<scm>
+		<connection>scm:git:git://github.com/mkroli/lpm.git</connection>
+		<developerConnection>scm:git:https://github.com/mkroli/lpm.git</developerConnection>
+		<url>https://github.com/mkroli/lpm</url>
+	</scm>
+	<inceptionYear>2012</inceptionYear>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/mkroli/lpm/issues</url>
+	</issueManagement>
+
+	<properties>
+		<maven.compiler.source>1.5</maven.compiler.source>
+		<maven.compiler.target>1.5</maven.compiler.target>
+		<encoding>UTF-8</encoding>
+		<scala.version>2.9.1</scala.version>
+		<scalatest.version>1.6.1</scalatest.version>
+		<junit.version>4.10</junit.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<version>2.15.1</version>
+				<configuration>
+					<args>
+						<arg>-unchecked</arg>
+						<arg>-deprecation</arg>
+					</args>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.11</version>
+				<configuration>
+					<includes>
+						<include>**/*Spec.class</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

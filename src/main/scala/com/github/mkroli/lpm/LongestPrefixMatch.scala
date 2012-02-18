@@ -20,12 +20,36 @@ private[lpm] sealed class TreeNode[T: Manifest] {
   val values: Array[Option[T]] = Array.fill(10)(None)
 }
 
+/**
+ * This class stores data belonging to decimal number ranges. This can be used
+ * inside dial plans. Ranges with more than 2 permutations are compressed
+ * automatically. When querying this the value of the longest matching path
+ * will be returned. So if there are the ranges 1 and 11-13 when querying with
+ * 12, the later's value will be returned. This is as it holds the longer
+ * prefix (2 digits instead of 1).
+ *
+ * Example usage:
+ * <pre>
+ * val lpm = new LongestPrefixMatch[String]
+ * lpm.addValueForRange("123", "456", "V1")
+ * lpm.addValueForRange("12345", "12349", "V2")
+ * lpm.getValueFromPrefix("1234")  // will return Some("V1")
+ * lpm.getValueFromPrefix("12347") // will return Some("V2")
+ * </pre>
+ */
 class LongestPrefixMatch[T: Manifest] {
   private val root = new TreeNode[T]
 
   private def prefixFromString(prefix: String) =
     prefix.toCharArray.map(_.toString.toInt)
 
+  /**
+   * Adds a range-specific value. The rangeStart and rangeEnd parameters must
+   * be of the same length.
+   * @param rangeStart the inclusive start of the range
+   * @param rangeEnd the inclusive end of the range
+   * @param value the data to be stored for this range
+   */
   def addValueForRange(rangeStart: String, rangeEnd: String, value: T) {
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
@@ -63,6 +87,10 @@ class LongestPrefixMatch[T: Manifest] {
     }
   }
 
+  /**
+   * Retrieves the value stored under the longest range matching.
+   * @param prefix the number to match prefixes against
+   */
   def getValueFromPrefix(prefix: String): Option[T] =
     getValueFromPrefix(root, prefixFromString(prefix))
 }

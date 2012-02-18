@@ -6,6 +6,13 @@ import org.scalatest.Spec
 @RunWith(classOf[JUnitRunner])
 class LongestPrefixMatchSpec extends Spec {
   describe("LongestPrefixMatch") {
+    it("should return None if nothing is found") {
+      val lpm = new LongestPrefixMatch[Int]
+      assert(None == lpm.getValueFromPrefix("789"))
+      lpm.addValueForRange("123", "456", 1)
+      assert(None == lpm.getValueFromPrefix("789"))
+    }
+
     it("should return value no matter how deep input is") {
       val lpm = new LongestPrefixMatch[Int]
       lpm.addValueForRange("123", "456", 1)
@@ -27,6 +34,13 @@ class LongestPrefixMatchSpec extends Spec {
       lpm.addValueForRange("312", "312", 2);
       assert(1 == lpm.getValueFromPrefix("3123").get)
       assert(2 == lpm.getValueFromPrefix("3122").get)
+    }
+
+    it("should return longest prefix matching as if it wasn't optimized") {
+      val lpm = new LongestPrefixMatch[Int]
+      lpm.addValueForRange("100", "199", 1)
+      lpm.addValueForRange("15", "19", 2)
+      assert(1 == lpm.getValueFromPrefix("17").get)
     }
   }
 }

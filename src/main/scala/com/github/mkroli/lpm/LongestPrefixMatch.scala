@@ -17,7 +17,7 @@ package com.github.mkroli.lpm
 
 private[lpm] sealed class TreeNode[T: Manifest] {
   val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
-  val values: Array[Option[T]] = Array.fill(10)(None)
+  val values: Array[Option[(Int, T)]] = Array.fill(10)(None)
 }
 
 /**
@@ -71,15 +71,19 @@ class LongestPrefixMatch[T: Manifest] {
           tree.subNodes(i) = Some(new TreeNode[T])
         tree = tree.subNodes(i).get
       }
-      tree.values(path.last) = Some(value)
+      tree.values(path.last) = Some(rangeStart.length, value)
     }
   }
 
-  private def getValueFromPrefix(tree: TreeNode[T], prefix: Seq[Int]): Option[T] = {
+  private def getValueFromPrefix(tree: TreeNode[T], prefix: Seq[Int]): Option[(Int, T)] = {
     tree.subNodes(prefix.head) match {
       case Some(subTree) if prefix.length > 1 =>
         getValueFromPrefix(subTree, prefix.drop(1)) match {
-          case subValue: Some[T] => subValue
+          case subValue @ Some((subDepth, _)) =>
+            tree.values(prefix.head) match {
+              case s @ Some((depth, value)) if depth > subDepth => s
+              case _ => subValue
+            }
           case _ => tree.values(prefix.head)
         }
       case _ =>
@@ -92,5 +96,5 @@ class LongestPrefixMatch[T: Manifest] {
    * @param prefix the number to match prefixes against
    */
   def getValueFromPrefix(prefix: String): Option[T] =
-    getValueFromPrefix(root, prefixFromString(prefix))
+    getValueFromPrefix(root, prefixFromString(prefix)).map(_._2)
 }

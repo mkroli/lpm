@@ -58,21 +58,25 @@ class LongestPrefixMatch[T: Manifest] {
       (number / pow(10, digits).asInstanceOf[Long]) * pow(10, digits).asInstanceOf[Long]
     def upper(number: Long, digits: Int) =
       lower(number, digits) + pow(10, digits).asInstanceOf[Long] - 1
-    for {
-      o <- 1 to max(rangeStart.length, rangeEnd.length)
-      i <- start to end
-      if lower(i, o) < start || upper(i, o) > end
-      if lower(i, o - 1) >= start && upper(i, o - 1) <= end
-      if lower(i, o - 1) != lower(i - 1, o - 1)
-    } {
-      val path = prefixFromString((lower(i, o - 1) / pow(10, o - 1).asInstanceOf[Long]).toString)
-      var tree = root
-      for (i <- path.dropRight(1)) {
-        if (tree.subNodes(i) == None)
-          tree.subNodes(i) = Some(new TreeNode[T])
-        tree = tree.subNodes(i).get
+
+    var i = start
+    while (i <= end) {
+      for {
+        o <- 1 to max(rangeStart.length, rangeEnd.length)
+        if lower(i, o) < start || upper(i, o) > end
+        if lower(i, o - 1) >= start && upper(i, o - 1) <= end
+      } {
+        val path = prefixFromString((lower(i, o - 1) / pow(10, o - 1).asInstanceOf[Long]).toString)
+        var tree = root
+        for (i <- path.dropRight(1)) {
+          if (tree.subNodes(i) == None)
+            tree.subNodes(i) = Some(new TreeNode[T])
+          tree = tree.subNodes(i).get
+        }
+        tree.values(path.last) = Some(rangeStart.length, value)
+        println(i + " " + o)
+        i += pow(10, o - 1).toLong
       }
-      tree.values(path.last) = Some(rangeStart.length, value)
     }
   }
 

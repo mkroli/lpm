@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
+import scala.math.{ max, pow }
 
 private[lpm] sealed class TreeNode[T: Manifest] {
   val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
@@ -54,17 +55,17 @@ class LongestPrefixMatch[T: Manifest] {
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
     def lower(number: Long, digits: Int) =
-      (number / Math.pow(10, digits).asInstanceOf[Long]) * Math.pow(10, digits).asInstanceOf[Long]
+      (number / pow(10, digits).asInstanceOf[Long]) * pow(10, digits).asInstanceOf[Long]
     def upper(number: Long, digits: Int) =
-      lower(number, digits) + Math.pow(10, digits).asInstanceOf[Long] - 1
+      lower(number, digits) + pow(10, digits).asInstanceOf[Long] - 1
     for {
-      o <- 1 to Math.max(rangeStart.length, rangeEnd.length)
+      o <- 1 to max(rangeStart.length, rangeEnd.length)
       i <- start to end
       if lower(i, o) < start || upper(i, o) > end
       if lower(i, o - 1) >= start && upper(i, o - 1) <= end
       if lower(i, o - 1) != lower(i - 1, o - 1)
     } {
-      val path = prefixFromString((lower(i, o - 1) / Math.pow(10, o - 1).asInstanceOf[Long]).toString)
+      val path = prefixFromString((lower(i, o - 1) / pow(10, o - 1).asInstanceOf[Long]).toString)
       var tree = root
       for (i <- path.dropRight(1)) {
         if (tree.subNodes(i) == None)

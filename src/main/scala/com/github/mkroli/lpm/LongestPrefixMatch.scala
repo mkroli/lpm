@@ -74,7 +74,6 @@ class LongestPrefixMatch[T: Manifest] {
           tree = tree.subNodes(i).get
         }
         tree.values(path.last) = Some(rangeStart.length, value)
-        println(i + " " + o)
         i += pow(10, o - 1).toLong
       }
     }

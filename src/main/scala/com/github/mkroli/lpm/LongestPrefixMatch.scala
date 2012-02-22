@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
-import scala.math.{ max, pow }
+import scala.Array.canBuildFrom
+import scala.math.max
+import scala.math.pow
 
 private[lpm] sealed class TreeNode[T: Manifest] {
   val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
@@ -38,7 +40,7 @@ private[lpm] sealed class TreeNode[T: Manifest] {
  * lpm.getValueFromPrefix("12347") // will return Some("V2")
  * </pre>
  */
-class LongestPrefixMatch[T: Manifest] {
+sealed class LongestPrefixMatch[T: Manifest] {
   private val root = new TreeNode[T]
 
   private def prefixFromString(prefix: String) =
@@ -73,7 +75,10 @@ class LongestPrefixMatch[T: Manifest] {
             tree.subNodes(i) = Some(new TreeNode[T])
           tree = tree.subNodes(i).get
         }
-        tree.values(path.last) = Some(rangeStart.length, value)
+        tree.values(path.last) = tree.values(path.last) match {
+          case oldValue @ Some((oldWeight, _)) if (oldWeight > rangeStart.length) => oldValue
+          case _ => Some(rangeStart.length, value)
+        }
         i += pow(10, o - 1).toLong
       }
     }

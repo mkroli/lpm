@@ -42,5 +42,15 @@ class LongestPrefixMatchSpec extends Spec {
       lpm.addValueForRange("15", "19", 2)
       assert(1 == lpm.getValueFromPrefix("17").get)
     }
+
+    it("should return longest not latest prefix even if optimized") {
+      val lpm = new LongestPrefixMatch[Int]
+      lpm.addValueForRange("1", "1", 2)
+      lpm.addValueForRange("100", "199", 1)
+      assert(1 == lpm.getValueFromPrefix("1").get)
+      lpm.addValueForRange("200", "299", 1)
+      lpm.addValueForRange("2", "2", 2)
+      assert(1 == lpm.getValueFromPrefix("2").get)
+    }
   }
 }

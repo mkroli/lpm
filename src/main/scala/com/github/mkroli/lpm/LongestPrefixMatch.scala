@@ -40,7 +40,7 @@ private[lpm] sealed class TreeNode[T: Manifest] {
  * lpm.getValueFromPrefix("12347") // will return Some("V2")
  * </pre>
  */
-sealed class LongestPrefixMatch[T: Manifest] {
+class LongestPrefixMatch[T: Manifest] {
   private val root = new TreeNode[T]
 
   private def prefixFromString(prefix: String) =

@@ -32,13 +32,13 @@ private[lpm] sealed class TreeNode[T: Manifest] {
  * prefix (2 digits instead of 1).
  *
  * Example usage:
- * <pre>
+ * {{{
  * val lpm = new LongestPrefixMatch[String]
  * lpm.addValueForRange("123", "456", "V1")
  * lpm.addValueForRange("12345", "12349", "V2")
  * lpm.getValueFromPrefix("1234")  // will return Some("V1")
  * lpm.getValueFromPrefix("12347") // will return Some("V2")
- * </pre>
+ * }}}
  */
 class LongestPrefixMatch[T: Manifest] {
   private val root = new TreeNode[T]

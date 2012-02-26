@@ -18,6 +18,12 @@ import scala.annotation.tailrec
 
 class DuplicateRangeException extends Exception
 
+/**
+ * This trait changes [[com.github.mkroli.lpm.LongestPrefixMatch]]'S behavior
+ * of overwriting duplicate ranges by throwing a
+ * [[com.github.mkroli.lpm.DuplicateRangeException]] instead. Ranges are
+ * automatically being validated inside the addValueForRange method.
+ */
 trait DuplicateRangeValidator[T] extends LongestPrefixMatch[T] {
   private var ranges: List[(Long, Long)] = List()
 
@@ -34,6 +40,7 @@ trait DuplicateRangeValidator[T] extends LongestPrefixMatch[T] {
     }
   }
 
+  @throws(classOf[DuplicateRangeException])
   abstract override def addValueForRange(rangeStart: String, rangeEnd: String, value: T) = {
     val start = rangeStart.toLong
     val end = rangeEnd.toLong

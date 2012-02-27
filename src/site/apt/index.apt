@@ -1,0 +1,15 @@
+ ---
+ Longest Prefix Match
+ ---
+ Michael Krolikowski
+ ---
+
+About Longest Prefix Match
+
+* Overview
+
+  Longest Prefix Match is an implementation of an associative array which
+  doesn't associate keys to values using either the <<<equals()>>> or the
+  <<<hashCode()>>>. Instead it compares the beginning of a String with the
+  containing keys. The longest possible match will be associated and the value
+  be returned.

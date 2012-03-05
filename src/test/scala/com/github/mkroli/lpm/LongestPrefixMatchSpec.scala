@@ -67,5 +67,39 @@ class LongestPrefixMatchSpec extends Spec {
       lpm.addValueForRange("2", "2", 2)
       assert(1 == lpm.getValueFromPrefix("2").get)
     }
+
+    it("should accept a range without any prefix (0-9)") {
+      val lpm1 = new LongestPrefixMatch[Int]
+      val lpm2 = new LongestPrefixMatch[Int]
+      lpm1.addValueForRange("0", "9", 1)
+      lpm2.addValueForRange("00", "99", 1)
+      for (i <- 0 to 999) {
+        assert(1 == lpm1.getValueFromPrefix(i.toString).get)
+        assert(1 == lpm2.getValueFromPrefix(i.toString).get)
+      }
+    }
+
+    it("should accept a top-level range (1-9)") {
+      val lpm = new LongestPrefixMatch[Int]
+      lpm.addValueForRange("1", "9", 1)
+      assert(None == lpm.getValueFromPrefix("0"))
+      for (i <- 1 to 9)
+        assert(1 == lpm.getValueFromPrefix(i.toString).get)
+    }
+
+    it("should accept a top-level range (0-8)") {
+      val lpm = new LongestPrefixMatch[Int]
+      lpm.addValueForRange("0", "8", 1)
+      for (i <- 0 to 8)
+        assert(1 == lpm.getValueFromPrefix(i.toString).get)
+      assert(None == lpm.getValueFromPrefix("9"))
+    }
+
+    it("should not accept invalid ranges") {
+      val lpm = new LongestPrefixMatch[Int]
+      intercept[IllegalArgumentException](lpm.addValueForRange("", "", 1))
+      intercept[IllegalArgumentException](lpm.addValueForRange("a", "b", 2))
+      intercept[IllegalArgumentException](lpm.addValueForRange("1", "23", 3))
+    }
   }
 }

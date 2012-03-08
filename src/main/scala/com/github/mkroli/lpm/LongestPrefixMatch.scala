@@ -18,19 +18,6 @@ import scala.Array.canBuildFrom
 import scala.math.max
 import scala.math.pow
 
-private[lpm] sealed class TreeNode[T: Manifest] {
-  val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
-  val values: Array[Option[(Int, T)]] = Array.fill(10)(None)
-
-  override def toString = {
-    "TreeNode(\n  subNodes(\n    " +
-      subNodes.mkString(",\n    ") +
-      "\n  ),\n  values(\n    " +
-      values.mkString(",\n    ") +
-      "\n  )\n)"
-  }
-}
-
 /**
  * This class stores data belonging to decimal number ranges. This can be used
  * inside dial plans. Ranges with more than 2 permutations are compressed
@@ -49,6 +36,11 @@ private[lpm] sealed class TreeNode[T: Manifest] {
  * }}}
  */
 class LongestPrefixMatch[T: Manifest] {
+  private class TreeNode[T: Manifest] {
+    val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
+    val values: Array[Option[(Int, T)]] = Array.fill(10)(None)
+  }
+
   private val root = new TreeNode[T]
 
   private def prefixFromString(prefix: String) =
@@ -62,7 +54,7 @@ class LongestPrefixMatch[T: Manifest] {
    * @param value the data to be stored for this range
    */
   def addValueForRange(rangeStart: String, rangeEnd: String, value: T) {
-    if(rangeStart.length != rangeEnd.length)
+    if (rangeStart.length != rangeEnd.length)
       throw new IllegalArgumentException("the string size of rangeStart and rangeEnd must be the same")
 
     val start = rangeStart.toLong
@@ -78,7 +70,7 @@ class LongestPrefixMatch[T: Manifest] {
         o <- 1 to max(rangeStart.length, rangeEnd.length)
         if (lower(i, o) == 0 && upper(i, o) == end) ||
           ((lower(i, o) < start || upper(i, o) > end) &&
-             (lower(i, o - 1) >= start && upper(i, o - 1) <= end))
+            (lower(i, o - 1) >= start && upper(i, o - 1) <= end))
       } {
         val path = prefixFromString((lower(i, o - 1) / pow(10, o - 1).asInstanceOf[Long]).toString)
         var tree = root
@@ -118,6 +110,4 @@ class LongestPrefixMatch[T: Manifest] {
    */
   def getValueFromPrefix(prefix: String): Option[T] =
     getValueFromPrefix(root, prefixFromString(prefix)).map(_._2)
-
-  override def toString = root.toString
 }

@@ -25,8 +25,8 @@ import scala.reflect.Manifest$;
  * documentation of the LongestPrefixMatch class.
  */
 public class LongestPrefixMatchJ<T> {
-	private Manifest m = Manifest$.MODULE$.Object();
 	@SuppressWarnings("unchecked")
+	private Manifest<T> m = (Manifest<T>) Manifest$.MODULE$.Object();
 	private LongestPrefixMatch<T> lpm = new LongestPrefixMatch<T>(m);
 
 	public void addValueForRange(String rangeStart, String rangeEnd, T value) {

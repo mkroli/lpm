@@ -111,21 +111,3 @@ class LongestPrefixMatch[T: Manifest] {
   def getValueFromPrefix(prefix: String): Option[T] =
     getValueFromPrefix(root, prefixFromString(prefix)).map(_._2)
 }
-
-/**
- * This is a wrapper around [[com.github.mkroli.lpm.LongestPrefixMatch]] for
- * easier use with the Java language.
- */
-class LongestPrefixMatchJ[T >: Object] {
-  private val lpm = new LongestPrefixMatch[T]()(Manifest.classType(classOf[Object]))
-
-  def addValueForRange(rangeStart: String, rangeEnd: String, value: T) =
-    lpm.addValueForRange(rangeStart, rangeEnd, value)
-
-  def getValueFromPrefix(prefix: String) = {
-    lpm.getValueFromPrefix(prefix) match {
-      case Some(v) => v
-      case None => null
-    }
-  }
-}

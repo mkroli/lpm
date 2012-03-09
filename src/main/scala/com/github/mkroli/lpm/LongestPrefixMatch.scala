@@ -94,7 +94,7 @@ class LongestPrefixMatch[T: Manifest] {
         getValueFromPrefix(subTree, prefix.drop(1)) match {
           case subValue @ Some((subDepth, _)) =>
             tree.values(prefix.head) match {
-              case s @ Some((depth, value)) if depth > subDepth => s
+              case s @ Some((depth, _)) if depth > subDepth => s
               case _ => subValue
             }
           case _ => tree.values(prefix.head)
@@ -110,4 +110,22 @@ class LongestPrefixMatch[T: Manifest] {
    */
   def getValueFromPrefix(prefix: String): Option[T] =
     getValueFromPrefix(root, prefixFromString(prefix)).map(_._2)
+}
+
+/**
+ * This is a wrapper around [[com.github.mkroli.lpm.LongestPrefixMatch]] for
+ * easier use with the Java language.
+ */
+class LongestPrefixMatchJ[T >: Object] {
+  private val lpm = new LongestPrefixMatch[T]()(Manifest.classType(classOf[Object]))
+
+  def addValueForRange(rangeStart: String, rangeEnd: String, value: T) =
+    lpm.addValueForRange(rangeStart, rangeEnd, value)
+
+  def getValueFromPrefix(prefix: String) = {
+    lpm.getValueFromPrefix(prefix) match {
+      case Some(v) => v
+      case None => null
+    }
+  }
 }

@@ -5,7 +5,7 @@
 	<version>0.2-SNAPSHOT</version>
 
 	<name>Longest Prefix Match</name>
-	<url>https://github.com/mkroli/lpm</url>
+	<url>http://mkroli.github.com/lpm</url>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>

@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.mkroli.lpm</groupId>
 	<artifactId>lpm</artifactId>
-	<version>0.2</version>
+	<version>0.3-SNAPSHOT</version>
 
 	<name>Longest Prefix Match</name>
 	<url>http://mkroli.github.com/lpm</url>

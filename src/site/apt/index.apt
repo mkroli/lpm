@@ -13,3 +13,52 @@ About Longest Prefix Match
   <<<hashCode()>>>. Instead it compares the beginning of a String with the
   containing keys. The longest possible match will be associated and the value
   be returned.
+
+* Usage
+
+  Longest Prefix Match is implemented using Scala. Nevertheless it provides
+  classes which allow an easy integration with Java, too.
+  The following sections describe how Longest Prefix Match can be used using
+  either Scala or Java.
+
+** Scala
+
+  Lets pretend you want to retrieve a Int value according to a number
+  range. The two Int values being 1 and 2. 1 for "123" - "456" range and 2 for
+  "8" range. You'd add them as follows:
+
++--
+val lpm = new LongestPrefixMatch[Int]
+lpm.addValueForRange("123", "456", 1)
+lpm.addValueForRange("8", "8", 2)
++--
+
+  To retrieve the values you could do as follows:
+
++--
+lpm.getValueFromPrefix("2") match {
+  case Some(i) => println(i)
+  case _ => println("Nothing found")
+}
+/* This would print 1 in conjunction with the previous statements */
++--
+
+** Java
+
+  The Java equivalent of the above example would look as follows:
+
++--
+LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>();
+lpm.addValueForRange("123", "456", 1);
+lpm.addValueForRange("8", "8", 2);
++--
+
+  And again to retrieve the values it would look as follows:
+
++--
+Integer i = lpm.getValueFromPrefix("2");
+if(null == i)
+	System.out.println("Nothing found");
+else
+	System.out.prinln(i);
++--

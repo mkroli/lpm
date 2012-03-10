@@ -1,0 +1,23 @@
+body {
+	text-align: justify;
+}
+
+* {
+	border-radius: 3px;
+}
+
+#breadcrumbs {
+	border-radius: 0;
+}
+
+#bannerLeft {
+	margin-left: .25em;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, .5), 1px 1px 0
+		rgba(255, 255, 255, .5), 0 0 10px rgba(0, 0, 0, .5);
+}
+
+h2,h3 {
+	border-radius: 6px;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0, .25), 1px 1px 0
+		rgba(255, 255, 255, .25);
+}

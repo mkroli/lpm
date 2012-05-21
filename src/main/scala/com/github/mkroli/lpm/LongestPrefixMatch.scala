@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
-import scala.Array.canBuildFrom
 import scala.math.max
 import scala.math.pow
 
@@ -36,15 +35,7 @@ import scala.math.pow
  * }}}
  */
 class LongestPrefixMatch[T: Manifest] {
-  private class TreeNode[T: Manifest] {
-    val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
-    val values: Array[Option[(Int, T)]] = Array.fill(10)(None)
-  }
-
   private val root = new TreeNode[T]
-
-  private def prefixFromString(prefix: String) =
-    prefix.toCharArray.map(_.toString.toInt)
 
   /**
    * Adds a range-specific value. The rangeStart and rangeEnd parameters must
@@ -59,11 +50,6 @@ class LongestPrefixMatch[T: Manifest] {
 
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
-    def lower(number: Long, digits: Int) =
-      (number / pow(10, digits).asInstanceOf[Long]) * pow(10, digits).asInstanceOf[Long]
-    def upper(number: Long, digits: Int) =
-      lower(number, digits) + pow(10, digits).asInstanceOf[Long] - 1
-
     var i = start
     while (i <= end) {
       for {

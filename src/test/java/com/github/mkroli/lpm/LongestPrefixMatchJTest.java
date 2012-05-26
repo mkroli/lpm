@@ -21,10 +21,22 @@ import org.junit.Test;
 public class LongestPrefixMatchJTest {
 	@Test
 	public void wrapperTest() {
-		LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>();
-		lpm.addValueForRange("1", "1", 1);
-		lpm.addValueForRange("1000", "1999", 2);
+		LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>()
+				.addValueForRange("1", "1", 1).addValueForRange("1000", "1999",
+						2);
 		Assert.assertNull(lpm.getValueFromPrefix("234567890"));
 		Assert.assertEquals(2, lpm.getValueFromPrefix("1234567890").intValue());
+	}
+
+	@Test
+	public void wrapperDuplicatesTest() {
+		LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>()
+				.addValueForRange("10", "19", 1);
+
+		try {
+			lpm.addValueForRange("12", "13", 2);
+			Assert.fail();
+		} catch (RuntimeException e) {
+		}
 	}
 }

@@ -14,8 +14,41 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
+import scala.annotation.tailrec
 
-private class TreeNode[T: Manifest] {
-  val subNodes: Array[Option[TreeNode[T]]] = Array.fill(10)(None)
-  val values: Array[Option[(Int, T)]] = Array.fill(10)(None)
+private class TreeNode[+A] private (
+  val subNodes: List[Option[TreeNode[A]]],
+  val values: List[Option[(Int, A)]]) {
+  def this() = this(List.fill(10)(None), List.fill(10)(None))
+
+  private def updateList[A](list: List[A], index: Int, value: A): List[A] =
+    list.take(index) ::: value :: list.drop(index + 1)
+
+  def update[B >: A](path: Seq[Int], value: Option[(Int, B)]): TreeNode[B] = {
+    path match {
+      case Nil => new TreeNode(List.fill(10)(None), List.fill(10)(value))
+      case head :: Nil =>
+        new TreeNode(subNodes, updateList(values, head, value))
+      case head :: tail =>
+        val subTree = subNodes(head) match {
+          case Some(subNode) => subNode
+          case None => new TreeNode
+        }
+        new TreeNode(
+          updateList(subNodes, head, Some(subTree.update(tail, value))),
+          values)
+    }
+  }
+
+  @tailrec
+  final def apply(path: Seq[Int]): Option[(Int, A)] = {
+    path match {
+      case Nil => None
+      case head :: Nil => values(head)
+      case head :: tail => subNodes(head) match {
+        case Some(subNode) => subNode(tail)
+        case None => None
+      }
+    }
+  }
 }

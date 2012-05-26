@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
+import scala.annotation.tailrec
 import scala.math.max
 import scala.math.pow
+
+class DuplicateRangeException extends Exception
 
 /**
  * This class stores data belonging to decimal number ranges. This can be used
@@ -27,15 +30,28 @@ import scala.math.pow
  *
  * Example usage:
  * {{{
- * val lpm = new LongestPrefixMatch[String]
- * lpm.addValueForRange("123", "456", "V1")
- * lpm.addValueForRange("12345", "12349", "V2")
+ * val lpm = new LongestPrefixMatch[String].
+ *   addValueForRange("123", "456", "V1").
+ *   addValueForRange("12345", "12349", "V2")
  * lpm.getValueFromPrefix("1234")  // will return Some("V1")
  * lpm.getValueFromPrefix("12347") // will return Some("V2")
  * }}}
  */
-class LongestPrefixMatch[T: Manifest] {
-  private val root = new TreeNode[T]
+class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long)]) {
+  def this() = this(new TreeNode, Nil)
+
+  @tailrec
+  private def isDuplicate(start: Long, end: Long, ranges: List[(Long, Long)] = this.ranges): Boolean = {
+    if (ranges.length == 0)
+      false
+    else {
+      val (s, e) = ranges.head
+      if ((start >= s && end <= e) || (start < s && end > e))
+        true
+      else
+        isDuplicate(start, end, ranges.drop(1))
+    }
+  }
 
   /**
    * Adds a range-specific value. The rangeStart and rangeEnd parameters must
@@ -43,14 +59,20 @@ class LongestPrefixMatch[T: Manifest] {
    * @param rangeStart the inclusive start of the range
    * @param rangeEnd the inclusive end of the range
    * @param value the data to be stored for this range
+   * @return an updated instance of [this]
    */
-  def addValueForRange(rangeStart: String, rangeEnd: String, value: T) {
+  @throws(classOf[IllegalArgumentException])
+  @throws(classOf[DuplicateRangeException])
+  def addValueForRange(rangeStart: String, rangeEnd: String, value: T) = {
     if (rangeStart.length != rangeEnd.length)
       throw new IllegalArgumentException("the string size of rangeStart and rangeEnd must be the same")
-
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
+    if (isDuplicate(start, end))
+      throw new DuplicateRangeException
+
     var i = start
+    var tree = root
     while (i <= end) {
       for {
         o <- 1 to max(rangeStart.length, rangeEnd.length)
@@ -59,25 +81,20 @@ class LongestPrefixMatch[T: Manifest] {
             (lower(i, o - 1) >= start && upper(i, o - 1) <= end))
       } {
         val path = prefixFromString((lower(i, o - 1) / pow(10, o - 1).asInstanceOf[Long]).toString)
-        var tree = root
-        for (p <- path.dropRight(1)) {
-          if (tree.subNodes(p) == None)
-            tree.subNodes(p) = Some(new TreeNode[T])
-          tree = tree.subNodes(p).get
-        }
-        tree.values(path.last) = tree.values(path.last) match {
+        i += pow(10, o - 1).toLong
+        tree = tree.update(path, tree(path) match {
           case oldValue @ Some((oldWeight, _)) if (oldWeight > rangeStart.length) => oldValue
           case _ => Some(rangeStart.length, value)
-        }
-        i += pow(10, o - 1).toLong
+        })
       }
     }
+    new LongestPrefixMatch(tree, (start, end) :: ranges)
   }
 
-  private def getValueFromPrefix(tree: TreeNode[T], prefix: Seq[Int]): Option[(Int, T)] = {
+  private def valueFromPrefix(tree: TreeNode[T], prefix: Seq[Int]): Option[(Int, T)] = {
     tree.subNodes(prefix.head) match {
       case Some(subTree) if prefix.length > 1 =>
-        getValueFromPrefix(subTree, prefix.drop(1)) match {
+        valueFromPrefix(subTree, prefix.drop(1)) match {
           case subValue @ Some((subDepth, _)) =>
             tree.values(prefix.head) match {
               case s @ Some((depth, _)) if depth > subDepth => s
@@ -90,10 +107,13 @@ class LongestPrefixMatch[T: Manifest] {
     }
   }
 
+  protected def valueFromPrefix(prefix: String): Option[(Int, T)] =
+    valueFromPrefix(root, prefixFromString(prefix))
+
   /**
    * Retrieves the value stored under the longest range matching.
    * @param prefix the number to match prefixes against
    */
   def getValueFromPrefix(prefix: String): Option[T] =
-    getValueFromPrefix(root, prefixFromString(prefix)).map(_._2)
+    valueFromPrefix(prefix).map(_._2)
 }

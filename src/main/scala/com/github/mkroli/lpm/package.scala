@@ -18,7 +18,7 @@ import scala.math.pow
 
 package object lpm {
   private[lpm] def prefixFromString(prefix: String) =
-    prefix.toCharArray.map(_.toString.toInt)
+    prefix.toCharArray.map(_.toString.toInt).toList
 
   private[lpm] def lower(number: Long, digits: Int) =
     (number / pow(10, digits).asInstanceOf[Long]) * pow(10, digits).asInstanceOf[Long]

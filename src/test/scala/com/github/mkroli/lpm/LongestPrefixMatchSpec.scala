@@ -131,5 +131,11 @@ class LongestPrefixMatchSpec extends Spec {
         addValueForRange("20", "29", 4).
         addValueForRange("2", "2", 5)
     }
+
+    it("should be accessable using shorter methods") {
+      val lpm = new LongestPrefixMatch[Int] << ("1", "5", 1) << ("6", "9", 2)
+      assert(1 === lpm("123").get)
+      assert(2 === lpm("789").get)
+    }
   }
 }

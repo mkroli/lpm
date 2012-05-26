@@ -37,7 +37,7 @@ class DuplicateRangeException extends Exception
  * lpm.getValueFromPrefix("12347") // will return Some("V2")
  * }}}
  */
-class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long)]) {
+class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long)]) extends LongestPrefixMatchSugar[T] {
   def this() = this(new TreeNode, Nil)
 
   @tailrec
@@ -107,7 +107,7 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
     }
   }
 
-  protected def valueFromPrefix(prefix: String): Option[(Int, T)] =
+  private def valueFromPrefix(prefix: String): Option[(Int, T)] =
     valueFromPrefix(root, prefixFromString(prefix))
 
   /**

@@ -43,14 +43,24 @@ lpm.getValueFromPrefix("2") match {
 /* This would print 1 in conjunction with the previous statements */
 +--
 
+  Or shorter:
+
++--
+val lpm = new LongestPrefixMatch << ("123", "456", 1) << ("8", "8", 2)
+lpm("2") match {
+  case Some(i) => println(i)
+  case _ => println("Nothing found")
+}
++--
+
 ** Java
 
   The Java equivalent of the above example would look as follows:
 
 +--
 LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>();
-lpm.addValueForRange("123", "456", 1);
-lpm.addValueForRange("8", "8", 2);
+lpm = lpm.addValueForRange("123", "456", 1);
+lpm = lpm.addValueForRange("8", "8", 2);
 +--
 
   And again to retrieve the values it would look as follows:

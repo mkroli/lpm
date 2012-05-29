@@ -28,9 +28,9 @@ About Longest Prefix Match
   "8" range. You'd add them as follows:
 
 +--
-val lpm = new LongestPrefixMatch[Int]
-lpm.addValueForRange("123", "456", 1)
-lpm.addValueForRange("8", "8", 2)
+val lpm = new LongestPrefixMatch[Int].
+  addValueForRange("123", "456", 1).
+  addValueForRange("8", "8", 2)
 +--
 
   To retrieve the values you could do as follows:

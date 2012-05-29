@@ -6,6 +6,13 @@
 	<version>0.3-SNAPSHOT</version>
 
 	<name>Longest Prefix Match</name>
+	<description>
+	Longest Prefix Match is an implementation of an associative array which
+	doesn't associate keys to values using either the equals() or the
+	hashCode(). Instead it compares the beginning of a String with the
+	containing keys. The longest possible match will be associated and the value
+	be returned.
+	</description>
 	<url>http://mkroli.github.com/lpm</url>
 	<licenses>
 		<license>

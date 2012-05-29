@@ -15,11 +15,11 @@
  */
 package com.github.mkroli.lpm
 import org.junit.runner.RunWith
+import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.Spec
 
 @RunWith(classOf[JUnitRunner])
-class LongestPrefixMatchSpec extends Spec {
+class LongestPrefixMatchSpec extends FunSpec {
   private def assertDuplicateRange(f: => Any) {
     try {
       f

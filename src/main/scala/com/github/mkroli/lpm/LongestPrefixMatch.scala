@@ -41,15 +41,30 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
   def this() = this(new TreeNode, Nil)
 
   @tailrec
-  private def isDuplicate(start: Long, end: Long, ranges: List[(Long, Long)] = this.ranges): Boolean = {
-    if (ranges.length == 0)
-      false
-    else {
-      val (s, e) = ranges.head
-      if ((start >= s && end <= e) || (start < s && end > e))
-        true
-      else
-        isDuplicate(start, end, ranges.drop(1))
+  private def isDuplicate(start: Long, end: Long, ranges: List[(Long, Long)]): Boolean = {
+    ranges match {
+      case Nil => false
+      case (s, e) :: _ if ((start >= s && end <= e) || (start < s && end > e)) => true
+      case _ :: tail => isDuplicate(start, end, tail)
+    }
+  }
+
+  @tailrec
+  private def addValueForRange(start: Long, end: Long, depth: Int, value: T, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
+    val maxOptimization = (for {
+      o <- 1 to depth
+      if (lower(r, o) == 0 && upper(r, o) == end) ||
+        ((lower(r, o) < start || upper(r, o) > end) &&
+          (lower(r, o - 1) >= start && upper(r, o - 1) <= end))
+    } yield o - 1).head
+    val path = prefixFromString((lower(r, maxOptimization) / pow(10, maxOptimization).asInstanceOf[Long]).toString)
+    val ntree = root.update(path, root(path) match {
+      case oldValue @ Some((oldWeight, _)) if (oldWeight > depth) => oldValue
+      case _ => Some(depth, value)
+    })
+    (r + pow(10, maxOptimization).toLong) match {
+      case i if i <= end => addValueForRange(start, end, depth, value, i, ntree)
+      case _ => new LongestPrefixMatch(ntree, (start, end) :: ranges)
     }
   }
 
@@ -63,32 +78,14 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
    */
   @throws(classOf[IllegalArgumentException])
   @throws(classOf[DuplicateRangeException])
-  def addValueForRange(rangeStart: String, rangeEnd: String, value: T) = {
+  def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatch[T] = {
     if (rangeStart.length != rangeEnd.length)
       throw new IllegalArgumentException("the string size of rangeStart and rangeEnd must be the same")
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
-    if (isDuplicate(start, end))
+    if (isDuplicate(start, end, ranges))
       throw new DuplicateRangeException
-
-    var i = start
-    var tree = root
-    while (i <= end) {
-      for {
-        o <- 1 to max(rangeStart.length, rangeEnd.length)
-        if (lower(i, o) == 0 && upper(i, o) == end) ||
-          ((lower(i, o) < start || upper(i, o) > end) &&
-            (lower(i, o - 1) >= start && upper(i, o - 1) <= end))
-      } {
-        val path = prefixFromString((lower(i, o - 1) / pow(10, o - 1).asInstanceOf[Long]).toString)
-        i += pow(10, o - 1).toLong
-        tree = tree.update(path, tree(path) match {
-          case oldValue @ Some((oldWeight, _)) if (oldWeight > rangeStart.length) => oldValue
-          case _ => Some(rangeStart.length, value)
-        })
-      }
-    }
-    new LongestPrefixMatch(tree, (start, end) :: ranges)
+    addValueForRange(start, end, rangeStart.length, value, start, root)
   }
 
   private def valueFromPrefix(tree: TreeNode[T], prefix: Seq[Int]): Option[(Int, T)] = {
@@ -107,13 +104,10 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
     }
   }
 
-  private def valueFromPrefix(prefix: String): Option[(Int, T)] =
-    valueFromPrefix(root, prefixFromString(prefix))
-
   /**
    * Retrieves the value stored under the longest range matching.
    * @param prefix the number to match prefixes against
    */
   def getValueFromPrefix(prefix: String): Option[T] =
-    valueFromPrefix(prefix).map(_._2)
+    valueFromPrefix(root, prefixFromString(prefix)).map(_._2)
 }

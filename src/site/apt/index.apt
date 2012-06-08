@@ -15,7 +15,7 @@ About Longest Prefix Match
   be returned. That means that if a value with a key of length N was inserted,
   any value which was inserted with a key of length N-X (where X > 0)
   will only be a result of queries for matching strings with the length of N-Y
-  (where Y >= X).
+  (where Y ≥ X).
 
 * Usage
 

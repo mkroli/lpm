@@ -12,7 +12,10 @@ About Longest Prefix Match
   doesn't associate keys to values using either the <<<equals()>>> or the
   <<<hashCode()>>>. Instead it compares the beginning of a String with the
   containing keys. The longest possible match will be associated and the value
-  be returned.
+  be returned. That means that if a value with a key of length N was inserted,
+  any value which was inserted with a key of length N-X (where X > 0)
+  will only be a result of queries for matching strings with the length of N-Y
+  (where Y >= X).
 
 * Usage
 
@@ -30,24 +33,25 @@ About Longest Prefix Match
 +--
 val lpm = new LongestPrefixMatch[Int].
   addValueForRange("123", "456", 1).
-  addValueForRange("8", "8", 2)
+  addValueForRange("8", "8", 2).
+  addValueForRange("80", "89", 3)
 +--
 
   To retrieve the values you could do as follows:
 
 +--
-lpm.getValueFromPrefix("2") match {
+lpm.getValueFromPrefix("8123") match {
   case Some(i) => println(i)
   case _ => println("Nothing found")
 }
-/* This would print 1 in conjunction with the previous statements */
+/* This would print 3 in conjunction with the previous statements */
 +--
 
   Or shorter:
 
 +--
-val lpm = new LongestPrefixMatch << ("123", "456", 1) << ("8", "8", 2)
-lpm("2") match {
+val lpm = new LongestPrefixMatch << ("123", "456", 1) << ("8", "8", 2) << ("80", "89", 3)
+lpm("8123") match {
   case Some(i) => println(i)
   case _ => println("Nothing found")
 }
@@ -61,12 +65,13 @@ lpm("2") match {
 LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>();
 lpm = lpm.addValueForRange("123", "456", 1);
 lpm = lpm.addValueForRange("8", "8", 2);
+lpm = lpm.addValueForRange("80", "89", 3);
 +--
 
   And again to retrieve the values it would look as follows:
 
 +--
-Integer i = lpm.getValueFromPrefix("2");
+Integer i = lpm.getValueFromPrefix("8123");
 if(null == i)
 	System.out.println("Nothing found");
 else

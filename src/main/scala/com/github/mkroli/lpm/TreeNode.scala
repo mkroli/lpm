@@ -21,10 +21,10 @@ private class TreeNode[+A] private (
   val values: List[Option[(Int, A)]]) {
   def this() = this(List.fill(10)(None), List.fill(10)(None))
 
-  private def updateList[A](list: List[A], index: Int, value: A): List[A] =
-    list.take(index) ::: value :: list.drop(index + 1)
-
   def update[B >: A](path: Seq[Int], value: Option[(Int, B)]): TreeNode[B] = {
+    def updateList[A](list: List[A], index: Int, value: A): List[A] =
+      list.take(index) ::: value :: list.drop(index + 1)
+
     path match {
       case Nil => new TreeNode(List.fill(10)(None), List.fill(10)(value))
       case head :: Nil =>

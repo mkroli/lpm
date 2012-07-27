@@ -51,12 +51,18 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
 
   @tailrec
   private def addValueForRange(start: Long, end: Long, depth: Int, value: T, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
-    val maxOptimization = (for {
-      o <- 1 to depth
-      if (lower(r, o) == 0 && upper(r, o) == end) ||
+    @tailrec
+    def optimizationExponent(o: Int): Int = {
+      if ((lower(r, o) == 0 && upper(r, o) == end) ||
         ((lower(r, o) < start || upper(r, o) > end) &&
-          (lower(r, o - 1) >= start && upper(r, o - 1) <= end))
-    } yield o - 1).head
+          (lower(r, o - 1) >= start && upper(r, o - 1) <= end))) {
+        o - 1
+      } else {
+        optimizationExponent(o + 1)
+      }
+    }
+
+    val maxOptimization = optimizationExponent(1)
     val path = prefixFromString((lower(r, maxOptimization) / pow(10, maxOptimization).asInstanceOf[Long]).toString)
     val ntree = root.update(path, root(path) match {
       case oldValue @ Some((oldWeight, _)) if (oldWeight > depth) => oldValue

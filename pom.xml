@@ -1,17 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.mkroli.lpm</groupId>
 	<artifactId>lpm</artifactId>
 	<version>0.4-SNAPSHOT</version>
+	<packaging>bundle</packaging>
 
 	<name>Longest Prefix Match</name>
-	<description>
-	Longest Prefix Match is an implementation of an associative array which
-	doesn't associate keys to values using either the equals() or the
-	hashCode(). Instead it compares the beginning of a String with the
-	containing keys. The longest possible match will be associated and the value
-	be returned.
-	</description>
+	<description>Longest Prefix Match is an implementation of an associative array which doesn't associate keys to values using either the equals() or the hashCode(). Instead it compares the beginning of a String with the containing keys. The longest possible match will be associated and the value be returned.</description>
 	<url>http://mkroli.github.com/lpm</url>
 	<licenses>
 		<license>
@@ -133,6 +129,12 @@
 						<include>**/*Test.class</include>
 					</includes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

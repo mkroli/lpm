@@ -69,7 +69,7 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
     }
 
     @tailrec
-    def addValueForRange(depth: Int, value: T, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
+    def addValueForRange(depth: Int, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
       def lower(number: Long, digits: Int) =
         (number / pow(10, digits).asInstanceOf[Long]) * pow(10, digits).asInstanceOf[Long]
 
@@ -94,14 +94,14 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
         case _ => Some(depth, value)
       })
       (r + pow(10, maxOptimization).toLong) match {
-        case i if i <= end => addValueForRange(depth, value, i, ntree)
+        case i if i <= end => addValueForRange(depth, i, ntree)
         case _ => new LongestPrefixMatch(ntree, (start, end) :: ranges)
       }
     }
 
     if (isDuplicate(ranges))
       throw new DuplicateRangeException
-    addValueForRange(rangeStart.length, value, start, root)
+    addValueForRange(rangeStart.length, start, root)
   }
 
   /**

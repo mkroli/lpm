@@ -14,6 +14,7 @@
 				<item name="Dependencies" href="dependencies.html" />
 				<item name="Source Repository" href="source-repository.html" />
 				<item name="Issue Tracking" href="issue-tracking.html" />
+				<item name="Continuous Integration" href="integration.html" />
 			</item>
 			<item name="Project Reports" href="project-reports.html">
 				<item name="ScalaDocs" href="scaladocs/index.html" />

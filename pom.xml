@@ -29,6 +29,10 @@
 		<system>GitHub</system>
 		<url>https://github.com/mkroli/lpm/issues</url>
 	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>http://travis-ci.org/mkroli/lpm</url>
+	</ciManagement>
 
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>
@@ -58,6 +62,7 @@
 							<report>scm</report>
 							<report>summary</report>
 							<report>issue-tracking</report>
+							<report>cim</report>
 						</reports>
 					</reportSet>
 				</reportSets>

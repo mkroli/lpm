@@ -21,3 +21,11 @@ h2,h3 {
 	text-shadow: -1px -1px 0 rgba(0, 0, 0, .25), 1px 1px 0
 		rgba(255, 255, 255, .25);
 }
+
+#bodyColumn {
+	margin-left: 217px;
+}
+
+#leftColumn {
+	width: 180px;
+}

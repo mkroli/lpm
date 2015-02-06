@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Michael Krolikowski
+ * Copyright 2012-2015 Michael Krolikowski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
+
 import scala.annotation.tailrec
 import scala.math.max
 import scala.math.pow
@@ -41,7 +42,7 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
   def this() = this(new TreeNode, Nil)
 
   private def prefixFromString(prefix: String) =
-    prefix.toCharArray.map(_.toString.toInt).toList
+    prefix.map(_.toString.toInt).toList
 
   /**
    * Adds a range-specific value. The rangeStart and rangeEnd parameters must
@@ -54,8 +55,7 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
   @throws(classOf[IllegalArgumentException])
   @throws(classOf[DuplicateRangeException])
   def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatch[T] = {
-    if (rangeStart.length != rangeEnd.length)
-      throw new IllegalArgumentException("the string size of rangeStart and rangeEnd must be the same")
+    require(rangeStart.length == rangeEnd.length, "the string size of rangeStart and rangeEnd must be the same")
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
 

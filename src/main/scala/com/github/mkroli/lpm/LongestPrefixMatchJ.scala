@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Michael Krolikowski
+ * Copyright 2012-2015 Michael Krolikowski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
     f
   } catch {
     case e: RuntimeException => throw e
-    case e => throw new RuntimeException(e)
+    case t: Throwable => throw new RuntimeException(t)
   }
 
   def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatchJ[T] = {

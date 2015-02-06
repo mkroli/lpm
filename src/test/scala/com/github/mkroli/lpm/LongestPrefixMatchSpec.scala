@@ -26,7 +26,6 @@ class LongestPrefixMatchSpec extends FunSpec {
       fail()
     } catch {
       case _: DuplicateRangeException =>
-      case e @ _ => throw e
     }
   }
 

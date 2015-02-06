@@ -40,7 +40,7 @@ lpm.getValueFromPrefix("8123") match {
 ```
 Or shorter:
 ```scala
-val lpm = new LongestPrefixMatch << ("123", "456", 1) << ("8", "8", 2) << ("80", "89", 3)
+val lpm = new LongestPrefixMatch + ("123", "456", 1) + ("8", "8", 2) + ("80", "89", 3)
 lpm("8123") match {
   case Some(i) => println(i)
   case _ => println("Nothing found")

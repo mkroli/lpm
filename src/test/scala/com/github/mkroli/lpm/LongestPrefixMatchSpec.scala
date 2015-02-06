@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Michael Krolikowski
+ * Copyright 2012-2015 Michael Krolikowski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ class LongestPrefixMatchSpec extends FunSpec {
     }
 
     it("should be accessable using shorter methods") {
-      val lpm = new LongestPrefixMatch[Int] << ("1", "5", 1) << ("6", "9", 2)
+      val lpm = new LongestPrefixMatch[Int] + ("1", "5", 1) + ("6", "9", 2)
       assert(1 === lpm("123").get)
       assert(2 === lpm("789").get)
     }

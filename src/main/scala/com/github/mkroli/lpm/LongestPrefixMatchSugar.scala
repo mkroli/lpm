@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Michael Krolikowski
+ * Copyright 2012-2015 Michael Krolikowski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.github.mkroli.lpm
 
 trait LongestPrefixMatchSugar[T] { self: LongestPrefixMatch[T] =>
-  def <<(rangeStart: String, rangeEnd: String, value: T) =
+  def +(rangeStart: String, rangeEnd: String, value: T) =
     addValueForRange(rangeStart, rangeEnd, value)
 
   def apply(prefix: String) =

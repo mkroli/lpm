@@ -24,7 +24,7 @@ name := "lpm"
 
 scalaVersion := "2.11.5"
 
-crossScalaVersions := Seq("2.9.3", "2.10.4", "2.11.5")
+crossScalaVersions := Seq("2.10.4", "2.11.5")
 
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation")
 

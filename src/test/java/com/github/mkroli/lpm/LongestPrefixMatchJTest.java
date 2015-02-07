@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Michael Krolikowski
+ * Copyright 2012-2015 Michael Krolikowski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,5 @@ public class LongestPrefixMatchJTest {
 						2);
 		Assert.assertNull(lpm.getValueFromPrefix("234567890"));
 		Assert.assertEquals(2, lpm.getValueFromPrefix("1234567890").intValue());
-	}
-
-	@Test
-	public void wrapperDuplicatesTest() {
-		LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>()
-				.addValueForRange("10", "19", 1);
-
-		try {
-			lpm.addValueForRange("12", "13", 2);
-			Assert.fail();
-		} catch (RuntimeException e) {
-		}
 	}
 }

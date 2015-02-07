@@ -19,8 +19,6 @@ import scala.annotation.tailrec
 import scala.math.max
 import scala.math.pow
 
-class DuplicateRangeException extends Exception
-
 /**
  * This class stores data belonging to decimal number ranges. This can be used
  * inside dial plans. Ranges with more than 2 permutations are compressed
@@ -38,8 +36,8 @@ class DuplicateRangeException extends Exception
  * lpm.getValueFromPrefix("12347") // will return Some("V2")
  * }}}
  */
-class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long)]) extends LongestPrefixMatchSugar[T] {
-  def this() = this(new TreeNode, Nil)
+class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMatchSugar[T] {
+  def this() = this(new TreeNode)
 
   private def prefixFromString(prefix: String) =
     prefix.map(_.toString.toInt).toList
@@ -53,20 +51,10 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
    * @return an updated instance of [this]
    */
   @throws(classOf[IllegalArgumentException])
-  @throws(classOf[DuplicateRangeException])
   def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatch[T] = {
     require(rangeStart.length == rangeEnd.length, "the string size of rangeStart and rangeEnd must be the same")
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
-
-    @tailrec
-    def isDuplicate(ranges: List[(Long, Long)]): Boolean = {
-      ranges match {
-        case Nil => false
-        case (s, e) :: _ if ((start >= s && end <= e) || (start < s && end > e)) => true
-        case _ :: tail => isDuplicate(tail)
-      }
-    }
 
     @tailrec
     def addValueForRange(depth: Int, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
@@ -95,12 +83,10 @@ class LongestPrefixMatch[T] private (root: TreeNode[T], ranges: List[(Long, Long
       })
       (r + pow(10, maxOptimization).toLong) match {
         case i if i <= end => addValueForRange(depth, i, ntree)
-        case _ => new LongestPrefixMatch(ntree, (start, end) :: ranges)
+        case _ => new LongestPrefixMatch(ntree)
       }
     }
 
-    if (isDuplicate(ranges))
-      throw new DuplicateRangeException
     addValueForRange(rangeStart.length, start, root)
   }
 

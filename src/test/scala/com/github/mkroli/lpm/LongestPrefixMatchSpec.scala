@@ -20,15 +20,6 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class LongestPrefixMatchSpec extends FunSpec {
-  private def assertDuplicateRange(f: => Any) {
-    try {
-      f
-      fail()
-    } catch {
-      case _: DuplicateRangeException =>
-    }
-  }
-
   describe("LongestPrefixMatch") {
     it("should return None if nothing is found") {
       val lpm = new LongestPrefixMatch[Int]()
@@ -109,17 +100,6 @@ class LongestPrefixMatchSpec extends FunSpec {
       intercept[IllegalArgumentException](lpm.addValueForRange("", "", 1))
       intercept[IllegalArgumentException](lpm.addValueForRange("a", "b", 2))
       intercept[IllegalArgumentException](lpm.addValueForRange("1", "23", 3))
-    }
-
-    it("should fail on duplicates only") {
-      val lpm = new LongestPrefixMatch[Int]().
-        addValueForRange("11", "18", 1)
-      assertDuplicateRange(lpm.addValueForRange("14", "15", 2))
-      assertDuplicateRange(lpm.addValueForRange("11", "15", 3))
-      assertDuplicateRange(lpm.addValueForRange("14", "18", 4))
-      assertDuplicateRange(lpm.addValueForRange("11", "18", 4))
-      lpm.addValueForRange("10", "17", 5).
-        addValueForRange("12", "19", 6)
     }
 
     it("shouldn't care about ranges with different weights at all") {

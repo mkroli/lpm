@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Michael Krolikowski
+ * Copyright 2012-2015 Michael Krolikowski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,22 @@ package com.github.mkroli.lpm
 import scala.annotation.tailrec
 
 private class TreeNode[+A] private (
-  val subNodes: List[Option[TreeNode[A]]],
-  val values: List[Option[(Int, A)]]) {
-  def this() = this(List.fill(10)(None), List.fill(10)(None))
+    val subNodes: Vector[Option[TreeNode[A]]],
+    val values: Vector[Option[(Int, A)]]) {
+  def this() = this(Vector.fill(10)(None), Vector.fill(10)(None))
 
   def update[B >: A](path: Seq[Int], value: Option[(Int, B)]): TreeNode[B] = {
-    def updateList[A](list: List[A], index: Int, value: A): List[A] =
-      list.take(index) ::: value :: list.drop(index + 1)
-
     path match {
-      case Nil => new TreeNode(List.fill(10)(None), List.fill(10)(value))
+      case Nil => new TreeNode(Vector.fill(10)(None), Vector.fill(10)(value))
       case head :: Nil =>
-        new TreeNode(subNodes, updateList(values, head, value))
+        new TreeNode(subNodes, values.updated(head, value))
       case head :: tail =>
         val subTree = subNodes(head) match {
           case Some(subNode) => subNode
           case None => new TreeNode
         }
         new TreeNode(
-          updateList(subNodes, head, Some(subTree.update(tail, value))),
+          subNodes.updated(head, Some(subTree.update(tail, value))),
           values)
     }
   }

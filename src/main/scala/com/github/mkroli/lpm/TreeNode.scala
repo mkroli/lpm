@@ -48,4 +48,47 @@ private class TreeNode[+A] private (
       }
     }
   }
+
+  private def dropValuesBelow(depth: Int) = new TreeNode(subNodes, values.map {
+    case Some((d, _)) if d <= depth => None
+    case e => e
+  })
+
+  def compact(): TreeNode[A] = {
+    @tailrec
+    def allTheSame[T](v: Vector[T]): Boolean = v match {
+      case a +: b +: _ if a != b => false
+      case v if v.size == 1 => true
+      case _ +: tail => allTheSame(tail)
+      case _ => false
+    }
+
+    val (compactSubNodes, compactValues) = (subNodes.map(_.map(_.compact())) zip values).map {
+      case e @ (None, _) => e
+      case (Some(subNode), v) =>
+        if (allTheSame(subNode.values)) {
+          val compactValue = (subNode.values.head, v) match {
+            case (s, None) => s
+            case (s @ Some((ad, _)), Some((bd, _))) if ad > bd => s
+            case _ => v
+          }
+          val compactSubNode = new TreeNode(subNode.subNodes, Vector.fill(10)(None))
+          val relevantCompactSubNode = if (compactSubNode.subNodes.exists(_.isDefined) || compactSubNode.values.exists(_.isDefined))
+            Some(compactSubNode)
+          else
+            None
+          (relevantCompactSubNode, compactValue)
+        } else {
+          (Some(subNode), v)
+        }
+    }.map {
+      case (subNode, v @ Some((depth, _))) =>
+        val compactSubNode = subNode.map(_.dropValuesBelow(depth)).filter { treeNode =>
+          treeNode.subNodes.exists(_.isDefined) || treeNode.values.exists(_.isDefined)
+        }
+        (compactSubNode, v)
+      case e => e
+    }.unzip
+    new TreeNode(compactSubNodes, compactValues)
+  }
 }

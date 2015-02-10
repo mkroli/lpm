@@ -20,7 +20,7 @@ Setup
 resolvers += "bintray-jcenter" at "http://jcenter.bintray.com"
 
 libraryDependencies ++= Seq(
-  "com.github.mkroli.lpm" %% "lpm" % "0.6"
+  "com.github.mkroli.lpm" %% "lpm" % "0.7"
 )
 ```
 
@@ -37,7 +37,7 @@ libraryDependencies ++= Seq(
   <dependency>
     <groupId>com.github.mkroli.lpm</groupId>
     <artifactId>lpm_2.11</artifactId>
-    <version>0.6</version>
+    <version>0.7</version>
   </dependency>
 </dependencies>
 ```

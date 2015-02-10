@@ -87,10 +87,10 @@ class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMat
       }
     }
 
-    addValueForRange(rangeStart.length, start, root).compact()
+    addValueForRange(rangeStart.length, start, root)
   }
 
-  private def compact() = new LongestPrefixMatch(root.compact())
+  def compact() = new LongestPrefixMatch(root.compact())
 
   /**
    * Retrieves the value stored under the longest range matching.

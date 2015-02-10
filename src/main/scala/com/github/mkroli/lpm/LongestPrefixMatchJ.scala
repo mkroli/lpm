@@ -35,6 +35,10 @@ class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
         lpm.addValueForRange(rangeStart, rangeEnd, value)))
   }
 
+  def compact(): LongestPrefixMatchJ[T] = {
+    new LongestPrefixMatchJ(lpm.compact())
+  }
+
   def getValueFromPrefix(prefix: String) = {
     translateExceptions(lpm.getValueFromPrefix(prefix)) match {
       case Some(v) => v

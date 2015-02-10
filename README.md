@@ -12,15 +12,45 @@ any value which was inserted with a key of length N-X (where X > 0)
 will only be a result of queries for matching strings with the length of N-Y
 (where Y ≥ X).
 
+Setup
+-----
+
+### sbt
+```scala
+resolvers += "bintray-jcenter" at "http://jcenter.bintray.com"
+
+libraryDependencies ++= Seq(
+  "com.github.mkroli.lpm" %% "lpm" % "0.6"
+)
+```
+
+### maven
+```xml
+<repositories>
+  <repository>
+    <id>bintray-jcenter</id>
+    <url>http://jcenter.bintray.com</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.github.mkroli.lpm</groupId>
+    <artifactId>lpm_2.11</artifactId>
+    <version>0.6</version>
+  </dependency>
+</dependencies>
+```
+
 Usage
 -----
+
 Longest Prefix Match is implemented using Scala. Nevertheless it provides
 classes which allow an easy integration with Java, too.
 The following sections describe how Longest Prefix Match can be used using
 either Scala or Java.
 
-Scala
------
+### Scala
 Lets pretend you want to retrieve a Int value according to a number
 range. The two Int values being 1 and 2. 1 for "123" - "456" range and 2 for
 "8" range. You'd add them as follows:
@@ -47,8 +77,7 @@ lpm("8123") match {
 }
 ```
 
-Java
-----
+### Java
 The Java equivalent of the above example would look as follows:
 ```java
 LongestPrefixMatchJ<Integer> lpm = new LongestPrefixMatchJ<Integer>();

@@ -19,6 +19,9 @@ trait LongestPrefixMatchSugar[T] { self: LongestPrefixMatch[T] =>
   def +(rangeStart: String, rangeEnd: String, value: T) =
     addValueForRange(rangeStart, rangeEnd, value)
 
+  def -(rangeStart: String, rangeEnd: String) =
+    deleteValueForRange(rangeStart, rangeEnd)
+
   def apply(prefix: String) =
     getValueFromPrefix(prefix)
 }

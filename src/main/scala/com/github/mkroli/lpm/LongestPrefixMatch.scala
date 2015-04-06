@@ -16,7 +16,6 @@
 package com.github.mkroli.lpm
 
 import scala.annotation.tailrec
-import scala.math.max
 import scala.math.pow
 
 /**
@@ -42,22 +41,13 @@ class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMat
   private def prefixFromString(prefix: String) =
     prefix.map(_.toString.toInt).toList
 
-  /**
-   * Adds a range-specific value. The rangeStart and rangeEnd parameters must
-   * be of the same length.
-   * @param rangeStart the inclusive start of the range
-   * @param rangeEnd the inclusive end of the range
-   * @param value the data to be stored for this range
-   * @return an updated instance of [this]
-   */
-  @throws(classOf[IllegalArgumentException])
-  def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatch[T] = {
+  private def modify(rangeStart: String, rangeEnd: String, modification: Int => Option[(Int, T)]): LongestPrefixMatch[T] = {
     require(rangeStart.length == rangeEnd.length, "the string size of rangeStart and rangeEnd must be the same")
     val start = rangeStart.toLong
     val end = rangeEnd.toLong
 
     @tailrec
-    def addValueForRange(depth: Int, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
+    def modifyValueForRange(depth: Int, r: Long, root: TreeNode[T]): LongestPrefixMatch[T] = {
       def lower(number: Long, digits: Int) =
         (number / pow(10, digits).asInstanceOf[Long]) * pow(10, digits).asInstanceOf[Long]
 
@@ -79,17 +69,45 @@ class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMat
       val path = prefixFromString((lower(r, maxOptimization) / pow(10, maxOptimization).asInstanceOf[Long]).toString)
       val ntree = root.update(path, root(path) match {
         case oldValue @ Some((oldWeight, _)) if (oldWeight > depth) => oldValue
-        case _ => Some(depth, value)
+        case _ => modification(depth)
       })
       (r + pow(10, maxOptimization).toLong) match {
-        case i if i <= end => addValueForRange(depth, i, ntree)
+        case i if i <= end => modifyValueForRange(depth, i, ntree)
         case _ => new LongestPrefixMatch(ntree)
       }
     }
 
-    addValueForRange(rangeStart.length, start, root)
+    modifyValueForRange(rangeStart.length, start, root)
   }
 
+  /**
+   * Adds a range-specific value. The rangeStart and rangeEnd parameters must
+   * be of the same length.
+   * @param rangeStart the inclusive start of the range
+   * @param rangeEnd the inclusive end of the range
+   * @param value the data to be stored for this range
+   * @return an updated instance of [this]
+   */
+  @throws(classOf[IllegalArgumentException])
+  def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatch[T] =
+    modify(rangeStart, rangeEnd, d => Some(d, value))
+
+  /**
+   * Removes a range-specific value. The rangeStart and rangeEnd parameters must
+   * be of the same length.
+   * @param rangeStart the inclusive start of the range
+   * @param rangeEnd the inclusive end of the range
+   * @return an updated instance of [this]
+   */
+  @throws(classOf[IllegalArgumentException])
+  def deleteValueForRange(rangeStart: String, rangeEnd: String): LongestPrefixMatch[T] =
+    modify(rangeStart, rangeEnd, _ => None)
+
+  /**
+   * Merges ranges of equal value and removes unused nodes. This operation is
+   * expensive as it operates on each node.
+   * @return an updated instance of [this]
+   */
   def compact() = new LongestPrefixMatch(root.compact())
 
   /**

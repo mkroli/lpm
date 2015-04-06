@@ -29,13 +29,15 @@ class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
     case t: Throwable => throw new RuntimeException(t)
   }
 
-  def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatchJ[T] = {
-    new LongestPrefixMatchJ(
-      translateExceptions(
-        lpm.addValueForRange(rangeStart, rangeEnd, value)))
+  def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatchJ[T] = translateExceptions {
+    new LongestPrefixMatchJ(lpm.addValueForRange(rangeStart, rangeEnd, value))
   }
 
-  def compact(): LongestPrefixMatchJ[T] = {
+  def deleteValueForRange(rangeStart: String, rangeEnd: String): LongestPrefixMatchJ[T] = translateExceptions {
+    new LongestPrefixMatchJ(lpm.deleteValueForRange(rangeStart, rangeEnd))
+  }
+
+  def compact(): LongestPrefixMatchJ[T] = translateExceptions {
     new LongestPrefixMatchJ(lpm.compact())
   }
 

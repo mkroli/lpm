@@ -45,4 +45,8 @@ class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
       case None => null
     }
   }
+
+  def size(): Int = lpm.size()
+
+  override def toString(): String = lpm.toString()
 }

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package com.github.mkroli.lpm
+
 import scala.annotation.tailrec
+import scala.language.postfixOps
 
 private class TreeNode[+A] private (
     val subNodes: Vector[Option[TreeNode[A]]],
@@ -91,4 +93,27 @@ private class TreeNode[+A] private (
     }.unzip
     new TreeNode(compactSubNodes, compactValues)
   }
+
+  def size(): Int = values.map(_.size).sum + subNodes.map(_.map(_.size).getOrElse(0)).sum
+
+  private def toString(level: Int): String = {
+    def s(str: List[String]): String = str match {
+      case Nil => ""
+      case e :: Nil =>
+        " " * (level * 2) + e
+      case e :: tail =>
+        " " * (level * 2) + e + "\n" + s(tail)
+    }
+
+    s((subNodes zip values zipWithIndex).collect {
+      case ((subNode, value), i) if subNode.isDefined || value.isDefined =>
+        val self = Seq(Some(i.toString), value.map {
+          case (depth, value) => s"$value ($depth)"
+        }).flatten.mkString(" ")
+        val children = subNode.map("\n" + _.toString(level + 1)).getOrElse("")
+        self + children
+    }.toList)
+  }
+
+  override def toString() = toString(0)
 }

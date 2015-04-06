@@ -115,4 +115,8 @@ class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMat
 
     valueFromPrefix(root, prefixFromString(prefix)).map(_._2)
   }
+
+  def size() = root.size()
+
+  override def toString() = root.toString()
 }

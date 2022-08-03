@@ -67,10 +67,11 @@ class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMat
 
       val maxOptimization = optimizationExponent(1)
       val path = prefixFromString((lower(r, maxOptimization) / pow(10, maxOptimization).asInstanceOf[Long]).toString)
-      val ntree = root.update(path, root(path) match {
-        case oldValue @ Some((oldWeight, _)) if (oldWeight > depth) => oldValue
-        case _ => modification(depth)
-      })
+      val (ndepth, nvalue) = root(path) match {
+        case Some((oldWeight, oldValue)) if (oldWeight > depth) => oldWeight -> Some(oldValue)
+        case _ => depth -> modification(depth).map(_._2)
+      }
+      val ntree = root.update(path, ndepth, nvalue)
       (r + pow(10, maxOptimization).toLong) match {
         case i if i <= end => modifyValueForRange(depth, i, ntree)
         case _ => new LongestPrefixMatch(ntree)
@@ -102,13 +103,6 @@ class LongestPrefixMatch[T] private (root: TreeNode[T]) extends LongestPrefixMat
   @throws(classOf[IllegalArgumentException])
   def deleteValueForRange(rangeStart: String, rangeEnd: String): LongestPrefixMatch[T] =
     modify(rangeStart, rangeEnd, _ => None)
-
-  /**
-   * Merges ranges of equal value and removes unused nodes. This operation is
-   * expensive as it operates on each node.
-   * @return an updated instance of [this]
-   */
-  def compact() = new LongestPrefixMatch(root.compact())
 
   /**
    * Retrieves the value stored under the longest range matching.

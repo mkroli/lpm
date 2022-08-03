@@ -23,19 +23,28 @@ private class TreeNode[+A] private (
     val values: Vector[Option[(Int, A)]]) {
   def this() = this(Vector.fill(10)(None), Vector.fill(10)(None))
 
-  def update[B >: A](path: Seq[Int], value: Option[(Int, B)]): TreeNode[B] = {
+  def update[B >: A](path: Seq[Int], depth: Int, value: Option[B]): TreeNode[B] = {
+    val v = value.map(v => (depth, v))
     path match {
-      case Nil => new TreeNode(Vector.fill(10)(None), Vector.fill(10)(value))
-      case head :: Nil =>
-        new TreeNode(subNodes, values.updated(head, value))
+      case Nil => new TreeNode(Vector.fill(10)(None), Vector.fill(10)(v))
+      case head :: Nil => new TreeNode(subNodes, values.updated(head, v))
       case head :: tail =>
-        val subTree = subNodes(head) match {
-          case Some(subNode) => subNode
-          case None => new TreeNode
+        val subTree = subNodes(head).getOrElse(new TreeNode).update(tail, depth, value)
+        if (subTree.values.forall(value.==)) {
+          if (value != None && subTree.subNodes.forall(None.==)) {
+            new TreeNode(
+              subNodes.updated(head, None),
+              values.updated(head, v))
+          } else {
+            new TreeNode(
+              subNodes.updated(head, Some(subTree)),
+              values.updated(head, v))
+          }
+        } else {
+          new TreeNode(
+            subNodes.updated(head, Some(subTree)),
+            values)
         }
-        new TreeNode(
-          subNodes.updated(head, Some(subTree.update(tail, value))),
-          values)
     }
   }
 
@@ -51,50 +60,7 @@ private class TreeNode[+A] private (
     }
   }
 
-  private def dropValuesBelow(depth: Int) = new TreeNode(subNodes, values.map {
-    case Some((d, _)) if d <= depth => None
-    case e => e
-  })
-
-  def compact(): TreeNode[A] = {
-    @tailrec
-    def allTheSame[T](v: Vector[T]): Boolean = v match {
-      case a +: b +: _ if a != b => false
-      case v if v.size == 1 => true
-      case _ +: tail => allTheSame(tail)
-      case _ => false
-    }
-
-    val (compactSubNodes, compactValues) = (subNodes.map(_.map(_.compact())) zip values).map {
-      case e @ (None, _) => e
-      case (Some(subNode), v) =>
-        if (allTheSame(subNode.values)) {
-          val compactValue = (subNode.values.head, v) match {
-            case (s, None) => s
-            case (s @ Some((ad, _)), Some((bd, _))) if ad > bd => s
-            case _ => v
-          }
-          val compactSubNode = new TreeNode(subNode.subNodes, Vector.fill(10)(None))
-          val relevantCompactSubNode = if (compactSubNode.subNodes.exists(_.isDefined) || compactSubNode.values.exists(_.isDefined))
-            Some(compactSubNode)
-          else
-            None
-          (relevantCompactSubNode, compactValue)
-        } else {
-          (Some(subNode), v)
-        }
-    }.map {
-      case (subNode, v @ Some((depth, _))) =>
-        val compactSubNode = subNode.map(_.dropValuesBelow(depth)).filter { treeNode =>
-          treeNode.subNodes.exists(_.isDefined) || treeNode.values.exists(_.isDefined)
-        }
-        (compactSubNode, v)
-      case e => e
-    }.unzip
-    new TreeNode(compactSubNodes, compactValues)
-  }
-
-  def size(): Int = values.map(_.size).sum + subNodes.map(_.map(_.size).getOrElse(0)).sum
+  def size(): Int = values.map(_.size).sum + subNodes.map(_.map(_.size()).getOrElse(0)).sum
 
   private def toString(level: Int): String = {
     def s(str: List[String]): String = str match {
@@ -105,7 +71,7 @@ private class TreeNode[+A] private (
         " " * (level * 2) + e + "\n" + s(tail)
     }
 
-    s((subNodes zip values zipWithIndex).collect {
+    "Node " + s((subNodes zip values zipWithIndex).collect {
       case ((subNode, value), i) if subNode.isDefined || value.isDefined =>
         val self = Seq(Some(i.toString), value.map {
           case (depth, value) => s"$value ($depth)"

@@ -14,36 +14,35 @@
  * limitations under the License.
  */
 
-import sbtrelease._
-import ReleaseKeys._
-import ReleaseStateTransformations._
+import com.typesafe.sbt.osgi.OsgiKeys._
+import sbtrelease.ReleaseStateTransformations._
 
-organization := "com.github.mkroli.lpm"
-
-name := "lpm"
-
-scalaVersion := "2.11.5"
-
-crossScalaVersions := Seq("2.10.4", "2.11.5")
-
-scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation")
-
-libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "2.2.0" % Test,
-  "junit" % "junit" % "4.11" % Test,
-  "com.novocode" % "junit-interface" % "0.11" % Test
-)
-
-testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
-
-osgiSettings
-
-OsgiKeys.exportPackage += "com.github.mkroli.lpm"
-
-OsgiKeys.privatePackage := Nil
-
-releaseSettings
-
-releaseProcess <<= releaseProcess { releaseProcess =>
-  releaseProcess filterNot Set(publishArtifacts, pushChanges)
-}
+lazy val root = (project in file("."))
+  .enablePlugins(SbtOsgi)
+  .settings(
+    organization := "com.github.mkroli.lpm",
+    name := "lpm",
+    scalaVersion := "3.1.2",
+    crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.16", "2.13.8", "3.1.2"),
+    scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
+    libraryDependencies ++= Seq(
+      "org.scalatest" %% "scalatest" % "3.2.12" % Test,
+      "org.scalatest" %% "scalatest-funspec" % "3.2.12" % Test,
+      "junit" % "junit" % "4.13.2" % Test,
+      "com.github.sbt" % "junit-interface" % "0.13.2" % Test
+    ),
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v"),
+    exportPackage += "com.github.mkroli.lpm",
+    privatePackage := Nil,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      runTest,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      setNextVersion,
+      commitNextVersion
+    )
+  )

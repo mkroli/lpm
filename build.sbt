@@ -34,6 +34,28 @@ lazy val root = (project in file("."))
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v"),
     exportPackage += "com.github.mkroli.lpm",
     privatePackage := Nil,
+    publishMavenStyle := true,
+    publishTo := sonatypePublishToBundle.value,
+    sonatypeCredentialHost := "s01.oss.sonatype.org",
+    sonatypeRepository := "https://s01.oss.sonatype.org/service/local",
+    licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    homepage := Some(url("https://github.com/mkroli/lpm")),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/mkroli/lpm"),
+        "scm:git:https://github.com/mkroli/lpm.git"
+      )
+    ),
+    developers := List(
+      Developer(
+        id = "mkroli",
+        name = "Michael Krolikowski",
+        email = "mkroli@yahoo.de",
+        url = url("https://github.com/mkroli")
+      )
+    ),
+    releaseCrossBuild := true,
+    releaseVersionBump := sbtrelease.Version.Bump.Minor,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
@@ -42,7 +64,10 @@ lazy val root = (project in file("."))
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
+      releaseStepCommandAndRemaining("+ publishSigned"),
+      releaseStepCommand("sonatypeBundleRelease"),
       setNextVersion,
-      commitNextVersion
+      commitNextVersion,
+      pushChanges
     )
   )

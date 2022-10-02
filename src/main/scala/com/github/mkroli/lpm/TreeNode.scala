@@ -18,32 +18,24 @@ package com.github.mkroli.lpm
 import scala.annotation.tailrec
 import scala.language.postfixOps
 
-private class TreeNode[+A] private (
-    val subNodes: Vector[Option[TreeNode[A]]],
-    val values: Vector[Option[(Int, A)]]) {
+private class TreeNode[+A] private (val subNodes: Vector[Option[TreeNode[A]]], val values: Vector[Option[(Int, A)]]) {
   def this() = this(Vector.fill(10)(None), Vector.fill(10)(None))
 
   def update[B >: A](path: Seq[Int], depth: Int, value: Option[B]): TreeNode[B] = {
     val v = value.map(v => (depth, v))
     path match {
-      case Nil => new TreeNode(Vector.fill(10)(None), Vector.fill(10)(v))
+      case Nil         => new TreeNode(Vector.fill(10)(None), Vector.fill(10)(v))
       case head :: Nil => new TreeNode(subNodes, values.updated(head, v))
       case head :: tail =>
         val subTree = subNodes(head).getOrElse(new TreeNode).update(tail, depth, value)
         if (subTree.values.forall(value.==)) {
           if (value != None && subTree.subNodes.forall(None.==)) {
-            new TreeNode(
-              subNodes.updated(head, None),
-              values.updated(head, v))
+            new TreeNode(subNodes.updated(head, None), values.updated(head, v))
           } else {
-            new TreeNode(
-              subNodes.updated(head, Some(subTree)),
-              values.updated(head, v))
+            new TreeNode(subNodes.updated(head, Some(subTree)), values.updated(head, v))
           }
         } else {
-          new TreeNode(
-            subNodes.updated(head, Some(subTree)),
-            values)
+          new TreeNode(subNodes.updated(head, Some(subTree)), values)
         }
     }
   }
@@ -51,12 +43,13 @@ private class TreeNode[+A] private (
   @tailrec
   final def apply(path: Seq[Int]): Option[(Int, A)] = {
     path match {
-      case Nil => None
+      case Nil         => None
       case head :: Nil => values(head)
-      case head :: tail => subNodes(head) match {
-        case Some(subNode) => subNode(tail)
-        case None => None
-      }
+      case head :: tail =>
+        subNodes(head) match {
+          case Some(subNode) => subNode(tail)
+          case None          => None
+        }
     }
   }
 
@@ -73,9 +66,12 @@ private class TreeNode[+A] private (
 
     "Node " + s((subNodes zip values zipWithIndex).collect {
       case ((subNode, value), i) if subNode.isDefined || value.isDefined =>
-        val self = Seq(Some(i.toString), value.map {
-          case (depth, value) => s"$value ($depth)"
-        }).flatten.mkString(" ")
+        val self = Seq(
+          Some(i.toString),
+          value.map { case (depth, value) =>
+            s"$value ($depth)"
+          }
+        ).flatten.mkString(" ")
         val children = subNode.map("\n" + _.toString(level + 1)).getOrElse("")
         self + children
     }.toList)

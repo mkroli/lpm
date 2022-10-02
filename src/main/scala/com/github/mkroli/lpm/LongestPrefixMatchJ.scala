@@ -15,10 +15,8 @@
  */
 package com.github.mkroli.lpm
 
-/**
- * This is a wrapper around [[com.github.mkroli.lpm.LongestPrefixMatch]] for
- * easier use with the Java language.
- */
+/** This is a wrapper around [[com.github.mkroli.lpm.LongestPrefixMatch]] for easier use with the Java language.
+  */
 class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
   def this() = this(new LongestPrefixMatch())
 
@@ -26,7 +24,7 @@ class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
     f
   } catch {
     case e: RuntimeException => throw e
-    case t: Throwable => throw new RuntimeException(t)
+    case t: Throwable        => throw new RuntimeException(t)
   }
 
   def addValueForRange(rangeStart: String, rangeEnd: String, value: T): LongestPrefixMatchJ[T] = translateExceptions {
@@ -40,7 +38,7 @@ class LongestPrefixMatchJ[T >: Object] private (lpm: LongestPrefixMatch[T]) {
   def getValueFromPrefix(prefix: String) = {
     translateExceptions(lpm.getValueFromPrefix(prefix)) match {
       case Some(v) => v
-      case None => null
+      case None    => null
     }
   }
 

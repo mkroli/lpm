@@ -23,7 +23,7 @@ lazy val root = (project in file("."))
     organization       := "com.github.mkroli",
     name               := "lpm",
     scalaVersion       := "3.1.2",
-    crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.16", "2.13.8", "3.1.2"),
+    crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.16", "2.13.9", "3.1.2"),
     scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
     libraryDependencies ++= Seq(
       "org.scalatest" %% "scalatest"         % "3.2.12" % Test,

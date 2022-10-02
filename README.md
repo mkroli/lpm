@@ -17,27 +17,18 @@ Setup
 
 ### sbt
 ```scala
-resolvers += "bintray-jcenter" at "http://jcenter.bintray.com"
-
 libraryDependencies ++= Seq(
-  "com.github.mkroli.lpm" %% "lpm" % "0.7"
+  "com.github.mkroli.lpm" %% "lpm" % "0.8.0"
 )
 ```
 
 ### maven
 ```xml
-<repositories>
-  <repository>
-    <id>bintray-jcenter</id>
-    <url>http://jcenter.bintray.com</url>
-  </repository>
-</repositories>
-
 <dependencies>
   <dependency>
     <groupId>com.github.mkroli.lpm</groupId>
     <artifactId>lpm_2.11</artifactId>
-    <version>0.7</version>
+    <version>0.8.0</version>
   </dependency>
 </dependencies>
 ```

@@ -20,7 +20,7 @@ import sbtrelease.ReleaseStateTransformations._
 lazy val root = (project in file("."))
   .enablePlugins(SbtOsgi)
   .settings(
-    organization := "com.github.mkroli.lpm",
+    organization := "com.github.mkroli",
     name := "lpm",
     scalaVersion := "3.1.2",
     crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.16", "2.13.8", "3.1.2"),

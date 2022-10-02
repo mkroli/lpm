@@ -54,7 +54,6 @@ lazy val root = (project in file("."))
         url = url("https://github.com/mkroli")
       )
     ),
-    pgpSigningKey := Some("08ED24E6D892A659"),
     releaseCrossBuild := true,
     releaseVersionBump := sbtrelease.Version.Bump.Minor,
     releaseProcess := Seq[ReleaseStep](

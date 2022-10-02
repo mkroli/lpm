@@ -22,14 +22,14 @@ lazy val root = (project in file("."))
   .settings(
     organization       := "com.github.mkroli",
     name               := "lpm",
-    scalaVersion       := "3.1.2",
-    crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.16", "2.13.9", "3.1.2"),
+    scalaVersion       := "3.2.0",
+    crossScalaVersions := Seq("2.10.7", "2.11.12", "2.12.17", "2.13.9", "3.2.0"),
     scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest"         % "3.2.12" % Test,
-      "org.scalatest" %% "scalatest-funspec" % "3.2.12" % Test,
+      "org.scalatest" %% "scalatest"         % "3.2.14" % Test,
+      "org.scalatest" %% "scalatest-funspec" % "3.2.14" % Test,
       "junit"          % "junit"             % "4.13.2" % Test,
-      "com.github.sbt" % "junit-interface"   % "0.13.2" % Test
+      "com.github.sbt" % "junit-interface"   % "0.13.3" % Test
     ),
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v"),
     exportPackage += "com.github.mkroli.lpm",
